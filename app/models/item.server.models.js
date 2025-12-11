@@ -14,7 +14,14 @@ const create_new_item = (item, user_id, done) => {
     });
 };
 
+const get_item_by_id = (id, done) => {
+    const sql = `SELECT * FROM items WHERE item_id = ?`;
+    db.get(sql, [id], (err, item) => {
+        return done(err, item);
+    });
+};
 
 module.exports = {
     create_new_item,
+    get_item_by_id,
 };
