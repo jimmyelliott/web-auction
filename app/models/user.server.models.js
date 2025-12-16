@@ -85,6 +85,13 @@ const getIdFromToken = (token, done) => {
     });
 };
 
+const get_user_by_id = (id, done) => {
+    const sql = `SELECT * FROM users WHERE user_id = ?`;
+    db.get(sql, [id], (err, user) => {
+        return done(err, user);
+    });
+};
+
 
 
 module.exports = {
@@ -93,5 +100,6 @@ module.exports = {
     getToken,
     setToken,
     removeToken,
-    getIdFromToken
+    getIdFromToken,
+    get_user_by_id
 };

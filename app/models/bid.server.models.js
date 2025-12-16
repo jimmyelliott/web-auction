@@ -20,16 +20,36 @@ const get_highest_bid = (item_id, done) => {
     db.get(sql, [item_id], (err, row) => {
         if (err) return done(err);
 
-        // row.highest_bid will be null if no bids exist
         const highest = row?.highest_bid ?? null;
 
         return done(null, highest);
     });
 };
 
+const get_bids_for_item = (item_id, done) => {
+    const sql = `
+        SELECT
+            b.item_id,
+            b.amount,
+            b.timestamp,
+            b.user_id,
+            u.first_name,
+            u.last_name
+        FROM bids b
+        JOIN users u ON b.user_id = u.user_id
+        WHERE b.item_id = ?
+        ORDER BY b.amount DESC
+    `;
 
+    db.all(sql, [item_id], (err, rows) => {
+        if (err) return done(err);
+
+        return done(null, rows);
+    });
+};
 
 module.exports = {
     new_bid,
-    get_highest_bid
+    get_highest_bid,
+    get_bids_for_item
 };

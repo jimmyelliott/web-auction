@@ -68,7 +68,11 @@ const logout = (req, res) => {
 };
 
 const profile = (req, res) => {
-    return res.status(501).send("Not implemented yet");
+    const user_id = (req.params.user_id);
+    users.get_user_by_id(user_id, (err, user) => {
+        if (err || !user) return res.status(404).send({ error_message: "Invalid user" });
+        return res.status(201).json({ user: user });
+    });
 };
 
 module.exports = {
