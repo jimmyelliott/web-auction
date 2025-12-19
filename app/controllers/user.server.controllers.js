@@ -1,4 +1,5 @@
 const users = require('../models/user.server.models');
+const items = require('../models/item.server.models');
 const Joi = require("joi");
 
 const create_account = (req, res) => {
@@ -68,12 +69,27 @@ const logout = (req, res) => {
 };
 
 const profile = (req, res) => {
-    const user_id = (req.params.user_id);
+    const user_id = req.params.user_id;
+
     users.get_user_by_id(user_id, (err, user) => {
-        if (err || !user) return res.status(404).send({ error_message: "Invalid user" });
-        return res.status(201).json({ user: user });
+        if (err) return res.sendStatus(500);
+        if (!user) return res.status(404).send({ error_message: "Invalid user" });
+
+        const millis = Date.now();
+
+        items.get_selling(user.user_id, millis, (err, selling) => {
+            if (err) return res.sendStatus(500);
+
+            return res.status(200).json({
+                user_id: user.user_id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                selling: selling
+            });
+        });
     });
 };
+
 
 module.exports = {
     create_account,

@@ -86,12 +86,28 @@ const getIdFromToken = (token, done) => {
 };
 
 const get_user_by_id = (id, done) => {
-    const sql = `SELECT * FROM users WHERE user_id = ?`;
-    db.get(sql, [id], (err, user) => {
-        return done(err, user);
+    const sql = `
+        SELECT
+            user_id,
+            first_name,
+            last_name
+        FROM users
+        WHERE user_id = ?
+    `;
+
+    db.get(sql, [id], (err, row) => {
+        if (err) return done(err); // generic error
+        if (!row) return done(null, null); // user not found
+
+        const user = {
+            user_id: row.user_id,
+            first_name: row.first_name,
+            last_name: row.last_name
+        };
+
+        return done(null, user);
     });
 };
-
 
 
 module.exports = {

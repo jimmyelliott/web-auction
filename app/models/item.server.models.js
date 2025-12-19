@@ -57,7 +57,9 @@ const get_item_by_id = (item_id, done) => {
             creator_id: row.creator_id,
             first_name: row.creator_first_name,
             last_name: row.creator_last_name,
-            current_bid: row.current_bid ?? null,
+            current_bid: row.current_bid !== null
+            ? row.current_bid
+            : row.starting_bid,
             current_bid_holder: row.current_bid_user_id
                 ? {
                     user_id: row.current_bid_user_id,
@@ -71,8 +73,35 @@ const get_item_by_id = (item_id, done) => {
     });
 };
 
+const get_selling = (user_id, millis, done) => {
+    const sql = `
+        SELECT
+            i.item_id,
+            i.name,
+            i.description,
+            i.end_date,
+            i.start_date,
+            i.creator_id,
+            u.first_name,
+            u.last_name
+        FROM items i
+        JOIN users u ON i.creator_id = u.user_id
+        WHERE i.creator_id = ?
+          AND i.end_date > ?
+    `;
+
+    db.all(sql, [user_id, millis], (err, rows) => {
+        if (err) return done(err);
+
+        return done(null, rows);
+    });
+};
+
+
+
 
 module.exports = {
     create_new_item,
     get_item_by_id,
+    get_selling,
 };
