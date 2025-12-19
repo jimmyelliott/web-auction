@@ -51,8 +51,22 @@ const bid_item = (req, res) => {
 
 
 const get_bid_history = (req, res) => {
-    return res.sendStatus(500);
-}
+    const item_id = req.params.item_id;
+
+    items.get_item_by_id(item_id, (err, item) => { // checks seperately if there is an item, so that later we can return an empty list 
+        if (err) return res.sendStatus(500);
+        if (!item) {
+            return res.status(404).send({ error_message: "Invalid item" });
+        }
+
+        bids.get_bids_for_item(item_id, (err, bids) => {
+            if (err) return res.sendStatus(500);
+
+            return res.status(200).json(bids);
+        });
+    });
+};
+
 
 const get_question_item = (req, res) => {
     return res.sendStatus(500);

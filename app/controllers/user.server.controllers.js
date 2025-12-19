@@ -1,4 +1,6 @@
 const users = require('../models/user.server.models');
+const items = require('../models/item.server.models');
+const bids = require('../models/bid.server.models');
 const Joi = require("joi");
 
 const create_account = (req, res) => {
@@ -68,8 +70,37 @@ const logout = (req, res) => {
 };
 
 const profile = (req, res) => {
-    return res.status(501).send("Not implemented yet");
+    const user_id = req.params.user_id;
+
+    users.get_user_by_id(user_id, (err, user) => {
+        if (err) return res.sendStatus(500);
+        if (!user) return res.status(404).send({ error_message: "Invalid user" });
+
+        const millis = Date.now();
+
+        items.get_selling(user.user_id, millis, (err, selling) => {
+            if (err) return res.sendStatus(500);
+
+            bids.get_bidding_on(user.user_id, millis, (err, bidding_on) => {
+                if (err) return res.sendStatus(500);
+
+                items.get_sold(user.user_id, millis, (err, auctions_ended) => {
+                    if (err) return res.sendStatus(500);
+
+                    return res.status(200).json({
+                        user_id: user.user_id,
+                        first_name: user.first_name,
+                        last_name: user.last_name,
+                        selling,
+                        bidding_on,
+                        auctions_ended
+                    });
+                });
+            });
+        });
+    });
 };
+
 
 module.exports = {
     create_account,

@@ -34,8 +34,16 @@ const create_item = (req, res) => {
 
 
 const get_item = (req, res) => {
-    return res.sendStatus(500);
-}
+    const item_id = req.params.item_id;
+
+    items.get_item_by_id(item_id, (err, item) => {
+        if (err || !item) {
+            return res.status(404).send({ error_message: "Invalid item" });
+        }
+
+        return res.status(200).json(item);
+    });
+};
 
 module.exports = {
     search: search,
