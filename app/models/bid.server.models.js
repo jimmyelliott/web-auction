@@ -48,8 +48,34 @@ const get_bids_for_item = (item_id, done) => {
     });
 };
 
+const get_bidding_on = (user_id, millis, done) => {
+    const sql = `
+        SELECT DISTINCT
+            i.item_id,
+            i.name,
+            i.description,
+            i.end_date,
+            i.start_date,
+            i.creator_id,
+            u.first_name,
+            u.last_name
+        FROM bids b
+        JOIN items i ON b.item_id = i.item_id
+        JOIN users u ON i.creator_id = u.user_id
+        WHERE b.user_id = ?
+          AND i.end_date > ?
+    `;
+
+    db.all(sql, [user_id, millis], (err, rows) => {
+        if (err) return done(err);
+        return done(null, rows); // [] is valid
+    });
+};
+
+
 module.exports = {
     new_bid,
     get_highest_bid,
-    get_bids_for_item
+    get_bids_for_item,
+    get_bidding_on
 };

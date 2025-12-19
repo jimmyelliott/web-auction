@@ -1,5 +1,6 @@
 const users = require('../models/user.server.models');
 const items = require('../models/item.server.models');
+const bids = require('../models/bid.server.models');
 const Joi = require("joi");
 
 const create_account = (req, res) => {
@@ -80,11 +81,21 @@ const profile = (req, res) => {
         items.get_selling(user.user_id, millis, (err, selling) => {
             if (err) return res.sendStatus(500);
 
-            return res.status(200).json({
-                user_id: user.user_id,
-                first_name: user.first_name,
-                last_name: user.last_name,
-                selling: selling
+            bids.get_bidding_on(user.user_id, millis, (err, bidding_on) => {
+                if (err) return res.sendStatus(500);
+
+                items.get_sold(user.user_id, millis, (err, auctions_ended) => {
+                    if (err) return res.sendStatus(500);
+
+                    return res.status(200).json({
+                        user_id: user.user_id,
+                        first_name: user.first_name,
+                        last_name: user.last_name,
+                        selling,
+                        bidding_on,
+                        auctions_ended
+                    });
+                });
             });
         });
     });
