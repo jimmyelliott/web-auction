@@ -32,6 +32,7 @@ app.get('/', (req, res, next) => {
 require('./app/routes/user.server.routes')(app);
 require('./app/routes/item.server.routes')(app);
 require('./app/routes/bid.server.routes')(app);
+require('./app/routes/question.server.routes')(app);
 
 
 // Default response for any other request

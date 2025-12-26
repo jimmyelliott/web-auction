@@ -21,10 +21,12 @@ const create_item = (req, res) => {
     const token = req.header("X-Authorization");
     if (!token) return res.sendStatus(401);
 
+    const millis = Date.now();
+
     users.getIdFromToken(token, (err, user_id) => {
         if (err || !user_id) return res.sendStatus(401);
 
-        items.create_new_item(item, user_id, (err, item_id) => {
+        items.create_new_item(item, millis, user_id, (err, item_id) => {
             if (err) return res.status(400).send({ error_message: "Invalid item" });
 
             return res.status(201).json({ item_id: item_id });
