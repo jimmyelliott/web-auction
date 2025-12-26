@@ -1,6 +1,7 @@
 const users = require('../models/user.server.models');
 
 const isAuthenticated = function(req, res, next){
+    //console.log("AUTH MIDDLEWARE HIT");
     const token = req.get('X-Authorization');
     if (!token) return res.sendStatus(401);
 
