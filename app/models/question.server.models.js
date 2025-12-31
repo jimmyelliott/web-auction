@@ -51,9 +51,28 @@ const answer_question_if_owner = (answer_text, question_id, user_id, done) => {
     });
 };
 
+const get_questions_for_item = (item_id, done) => {
+    const sql = `
+        SELECT
+            question_id,
+            question AS question_text,
+            answer AS answer_text
+        FROM questions
+        WHERE item_id = ?
+        ORDER BY question_id DESC
+    `;
+
+    db.all(sql, [item_id], (err, rows) => {
+        if (err) return done(err);
+
+        return done(null, rows);
+    });
+};
+
 
 module.exports = {
     create_new_question,
     answer_question_if_owner,
-    get_question_with_item_owner
+    get_question_with_item_owner,
+    get_questions_for_item
 };

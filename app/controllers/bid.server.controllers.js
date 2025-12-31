@@ -53,7 +53,7 @@ const bid_item = (req, res) => {
 const get_bid_history = (req, res) => {
     const item_id = req.params.item_id;
 
-    items.get_item_by_id(item_id, (err, item) => { // checks seperately if there is an item, so that later we can return an empty list 
+    items.get_item_by_id(item_id, (err, item) => { // checks seperately if there is an item, so that later an empty list can be returned 
         if (err) return res.sendStatus(500);
         if (!item) {
             return res.status(404).send({ error_message: "Invalid item" });

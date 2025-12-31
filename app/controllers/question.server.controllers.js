@@ -7,20 +7,16 @@ const Joi = require("joi");
 const get_question_item = (req, res) => {
     const item_id = (req.params.item_id);
 
-    users.getIdFromToken(token, (err, user_id) => { //gets the user's ID
-        if (err || !user_id) return res.sendStatus(401);
+    items.get_item_by_id(item_id, (err, item) => { // checks seperately if there is an item, so that later an empty list can be returned 
+        if (err) return res.sendStatus(500);
+        if (!item) {
+            return res.status(404).send({ error_message: "Invalid item" });
+        }
 
-        items.get_item_by_id(item_id, (err, item) => { //retrieves the item details 
-            if (err || !item) return res.sendStatus(404);
+        questions.get_questions_for_item(item_id, (err, questions) => {
+            if (err) return res.sendStatus(500);
 
-            if (item.creator_id === user_id) {
-                return res.status(403).send({ error_message: "You cannot ask a question on your own item" });
-            }
-            
-            questions.create_new_question(question, user_id, item_id, (err, question_id) => { //enters bid for item
-                if (err) return res.sendStatus(500);
-                return res.status(200).send({ question_id });
-            });
+            return res.status(200).json(questions);
         });
     });
 }
