@@ -67,23 +67,7 @@ const get_bid_history = (req, res) => {
     });
 };
 
-
-const get_question_item = (req, res) => {
-    return res.sendStatus(500);
-}
-
-const question_item = (req, res) => {
-    return res.sendStatus(500);
-}
-
-const question_answer_item = (req, res) => {
-    return res.sendStatus(500);
-}
-
 module.exports = {
     bid_item: bid_item,
     get_bid_history: get_bid_history,
-    get_question_item: get_question_item,
-    question_item: question_item,
-    question_answer_item: question_answer_item
 }
