@@ -9,6 +9,6 @@ module.exports = function(app){
     app.route("/item/:item_id/question")
     .post(auth.isAuthenticated, questions.question_item);
 
-    app.route("/item/:item_id")
+    app.route("/question/:question_id")
     .post(auth.isAuthenticated, questions.question_answer_item);
 }
